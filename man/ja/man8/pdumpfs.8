@@ -1,0 +1,124 @@
+.\"                                      Hey, EMACS: -*- nroff -*-
+.Dd 11月 25, 2001
+.\" Please adjust this date whenever revising the manpage.
+.Dt PDUMPFS 8
+.Sh 名前
+.Nm pdumpfs
+.Nd Plan9 もどきのバックアップシステム
+.Sh 形式
+.Nm
+.Ar src-dir dest-dir
+.Op dest-basename
+.Sh 説明
+.Nm
+は
+.Nm Ruby ( Xr ruby 1 )
+で実装された Plan9 の dumpfs もどきの単純なバックアップシステムです。
+毎日のスナップショットを保存するため、
+いつでも過去のファイルを取り戻すことができます。
+ホームディレクトリのバックアップに利用すると便利です。 
+.Pp
+.Nm
+はバックアップ先ディレクトリに
+.Pa 年/月/日
+の形式でスナップショットを保存します。
+初回のみバックアップ対象ディレクトリ全体をコピーして、
+2日目以降は差分でバックアップしていきます。
+ディスクの消費量を節約するために、
+更新されなかったファイルは前日のスナップショットの
+ファイルへのハードリンクとして記録されます。 
+.Pp
+最新版は常に
+.Pa http://namazu.org/~satoru/pdumpfs/
+から入手可能です。 
+.Sh 使用例
+自分のホームディレクトリ
+.Pa /home/yourname
+を
+.Pa /backup
+にバックアップするには次のように実行します。 
+.Pp
+.Dl pdumpfs /home/yourname /backup >/backup/log 2>/backup/error-log
+.Pp
+2日目以降のバックアップは
+.Xr cron 5
+で行うといいでしょう。毎朝 5 時にバックアップを行うには
+.Xr crontab 5
+に次のような設定を(1行で)記述します。 
+.Pp
+.Dl 00 05 * * * pdumpfs /home/yourname /backup >/backup/log 2>/backup/error-log
+.Pp
+毎日のバックアップが順調に進むと、
+.Pa /backup/2001/02/19/yourname/ . . .
+のようなファイル名で過去のファイルにアクセスできます。 
+.Sh 制限事項
+.Bl -dash
+.It
+.Nm
+は通常のファイル、ディレクトリ、およびシンボリックリンクのみに
+対応しています。
+.Pp
+.It
+特殊なデバイスファイルなどは扱えません。ハードリンクを利用しているので、
+おそらく
+.Ux
+以外のシステムでは使えません。
+.Pp
+.It
+巨大なファイルを頻繁に追加・更新するディレクトリに対しては向いてません。
+.Pp
+.It
+バックアップは毎日行いましょう。バックアップの間隔が32日以上空くと、
+差分バックアップは行えなくなります。
+.Pp
+.It
+.Nm
+を運用すると、過去のファイルをいつでも取り戻せるので、
+不要になったファイルを気軽に削除することができます。
+しかし、過信は禁物です。
+.Nm
+には重大なバグがあるかもしれません。 
+.El
+.Sh 豆知識
+.Bl -dash
+.It
+1日あたり 10 MB ずつファイルが追加・更新されるとして、
+1 年で 4 GB くらいディスク消費が増える計算です。
+近年の計算機事情を考えれば、このくらいは平気でしょう。
+.Pp
+.It
+バックアップは物理的に異なるデバイスに取りましょう。
+.Pp
+.It
+いくつかのシステムでは、ファイルを変更不可能 (immutable)
+にすることができます。
+.Pp
+Linux で
+.Pa /backup
+以下のすべてのファイルを変更不可能にするには、
+root 権限で以下のコマンドを実行します。
+.Pp
+.Dl chattr -R +i /backup
+.Pp
+.Bx 4.4
+由来のシステムでは、やはり root 権限で以下のように実行します。
+.Pp
+.Dl chflags -R schg /backup
+.Pp
+これらのコマンドを使えば、バックアップをうっかり 
+.Cm "rm -rf"
+してしまうという被害を予防できます。 
+.Sh 著者
+このマニュアルは
+.An 高林 哲 Aq satoru@namazu.org
+さんが書かれた HTML ドキュメントを
+.An 島田 博幸 Aq shimaden@din.or.jp
+が変換したものを
+.An 武者 晶紀 Aq knu@iDaemons.org
+が再整形したものです。
+.Sh 関連項目
+.Xr chattr 1 ,
+.Xr chflags 1 ,
+.Xr crontab 5 ,
+.Xr cron 8
+

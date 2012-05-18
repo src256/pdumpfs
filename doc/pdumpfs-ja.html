@@ -1,0 +1,198 @@
+<?xml version="1.0" encoding="euc-jp"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta name="ROBOTS" content="NOARCHIVE" />
+<link rel="stylesheet" href="http://namazu.org/~satoru/satoru.css" media="all" type="text/css" />
+<title>pdumpfs: Plan9もどきのバックアップシステム</title>
+</head>
+<body>
+<p class="lang-navigator"><a href="pdumpfs.html">English</a> | Japanese</p>
+
+<h1>pdumpfs: Plan9もどきのバックアップシステム</h1>
+<p class="last-modified">最終更新日: 2004-12-20 (公開日: 2001-02-18)</p>
+
+<hr />
+
+<h2>pdumpfs とは?</h2>
+<p>
+pdumpfs は <a href="http://plan9.aichi-u.ac.jp/">Plan9</a> の <a href="http://plan9.aichi-u.ac.jp/dumpfs/">dumpfs</a> もどきの単純なバックアップシステムです。<a href="http://www.ruby-lang.org/">Ruby</a> で実装されています。 毎日のスナップショットを保存するため、いつでも過去のファイル を取り戻すことができます。ホームディレクトリのバックアップに 利用すると便利です。
+</p>
+<p>
+pdumpfs はバックアップ先ディレクトリに「年/月/日」の形式でス ナップショットを保存します。初回のみバックアップ対象ディレク トリ全体をコピーして、2日目以降は差分でバックアップしていき ます。ディスクの消費量を節約するために、更新されなかったファ イルは前日のスナップショットのファイルへのハードリンクとして 記録されます。
+</p>
+
+<!-- ad -->
+
+<h2><a name="news" id="news">新着情報</a></h2>
+
+<ul>
+<li><em>2004-12-15</em>: <a href="#download">pdumpfs 1.3</a>を公開
+<ul>
+<li>Windows 用のエラーメッセージを修正しました</li>
+</ul></li>
+
+<li><em>2004-08-11</em>: <a href="#download">pdumpfs 1.2</a>を公開
+<ul>
+<li>--quiet (-q), --dry-run (-n) オプションを追加</li>
+<li>最後のバックアップは 31日前までしか探さない、という制限をはずしました</li>
+<li>最後のバックアップへのシンボリックリンク latest を作るようにしました</li>
+<li>その他、細かい修正をいくつか</li>
+</ul></li>
+
+<li><em>2004-07-13</em>: <a href="#download">pdumpfs 1.1</a>を公開
+<ul>
+<li>エラーメッセージの表示に関するバグを修正しました</li>
+<li>その他、細かい修正をいくつか</li>
+</ul></li>
+
+<li><em>2004-06-22</em>: <a href="#download">pdumpfs 1.0</a> を公開<br />
+<ul>
+<li><a href="#gui">Windows 用の GUI</a> に対応しました。
+<a href="http://www.osk.3web.ne.jp/~nyasu/software/vrproject.html">VisualuRuby</a>
+を利用しています</li>
+</ul></li>
+
+<li><em>2001-02-19</em>: <a href="#download">pdumpfs 0.1</a> を公開<br /></li>
+</ul>
+
+<h2><a id="gui" name="gui">Windows 用の GUI</a></h2>
+
+<p class="center">
+<a href="images/pdumpfs-ja.png">
+<img src="images/pdumpfs-ja-mini.png" alt="[screenshot]" /></a>
+</p>
+
+<p>
+Windowx XP上のスクリーンショットです。
+</p>
+
+<h2>必要なもの</h2>
+
+<ul>
+<li><a href="http://www.ruby-lang.org/">Ruby</a> 1.8.1 以上</li>
+</ul>
+
+<h2>インストール</h2>
+
+<p>
+pdumpfs をソースからインストールするには、パッケージを展開し
+て<code>make</code> を実行し、でき上がった
+<code>pdumpfs</code> ファイルを <code>/usr/local/bin</code> 
+などにコピーします。
+</p>
+
+<h2>使い方</h2>
+
+
+<h3>コマンドライン</h3>
+<pre>
+   % pdumpfs &lt;対象ディレクトリ&gt; &lt;バックアップ先&gt;
+</pre>
+
+<h3>使用例</h3>
+<p>
+自分のホームディレクトリ /home/yourname を /backup にバック アップするには次のように実行します。
+</p>
+<pre>
+   % pdumpfs /home/yourname /backup &gt;/backup/log 2&gt;/backup/error-log
+</pre>
+<p>
+2日目以降のバックアップは cron で行うといいでしょう。毎朝 5 時にバックアップを行うには crontab に次のような設定を記述し ます。
+</p>
+<pre>
+    00 05 * * * pdumpfs /home/yourname /backup &gt;/backup/log 2&gt;/backup/error-log
+</pre>
+<p>
+毎日のバックアップが順調に進むと、 /backup/2001/02/19/yourname/... のようなファイル名で過去のファ イルにアクセスできます。
+</p>
+
+<h3>特定ファイルの除外</h3>
+
+<p>
+特定のファイルをバックアップから除外するには以下のオプションを用います。
+</p>
+
+<dl>
+<dt>--exclude=PATTERN</dt>
+<dd>PATTERN (Ruby の正規表現) にマッチするファイルまたはディレクトリをバックアップ対象から除外する。複数個を指定可能。
+パターンマッチは、コマンドライン引数に渡した「対象ディレクト
+リ」が相対パスならそれを含んだ相対パス、絶対パスなら絶対パス
+に対して行われます。
+</dd>
+<dt>--exclude-by-size=SIZE</dt>
+<dd>SIZE 以上のサイズのファイルをバックアップ対象から除外する。
+1000, 100K, 10M, 1G のような単位の指定が可能。</dd>
+<dt>--exclude-by-glob=GLOB</dt>
+<dd>GLOB にマッチするファイルをバックアップ対象から除外する。ファイル名の比較には、ファイルのベースネームに対して fnmatch(3) (シェルのワイルドカード) を利用します。 複数個を指定可能。</dd>
+</dl>
+
+<h4>例</h4>
+
+<pre>
+# spool か log にマッチするファイル/ディレクトリをバックアップしない
+% pdumpfs --exclude 'spool|log' /var /mnt/backup
+
+# 10MB 以上のファイルをバックアップしない
+% pdumpfs --exclude-by-size 10M ~/ /mnt/backup
+
+# wave file (*.wav) をバックアップしない
+% pdumpfs --exclude-by-glob "*.wav" ~/ /mnt/backup
+</pre>
+
+
+<h2>制限事項</h2>
+
+<ul>
+<li>pdumpfs は通常のファイル、ディレクトリ、およびシンボリックリンクのみに対応しています。特殊なデバイスファイルなどは扱えません</li>
+
+<li>巨大なファイルを頻繁に追加・更新するディレクトリに対しては向いてません</li>
+
+<li>pdumpfs を運用すると、過去のファイルをいつでも取り戻せる ので、不要になったファイルを気軽に削除することができます。し かし、過信は禁物です。pdumpfsには重大なバグがあるかもしれま せん</li>
+</ul>
+
+<h2>豆知識</h2>
+
+<ul>
+<li>1日あたり 10 MB ずつファイルが追加・更新されるとして、1年で4 GB くらいディスク消費が増える計算です。近年の計算機事情を考えれば、このくらいは平気でしょう</li>
+
+<li>バックアップは物理的に異なるデバイスに取りましょう</li>
+
+<li>Linux の ext2/ext3 ファイルシステムでは chattr コマンドでファイルを変更不可能(immutable) にすることができます。 /backup 以下のすべてのファ イルを変更不可能にするには root 権限で <code>chattr -R +i /backup</code> と実行します。chattr コマンドを使えば、バック アップをうっかり rm -rf してしまうという被害を予防できます</li>
+</ul>
+
+<h2><a name="download" id="download">ダウンロード</a></h2>
+<p>
+<a href="http://www.gnu.org/copyleft/gpl.html">GNU General Public License version 2</a> (<a href="http://www.sra.co.jp/public/doc/gnu/gpl-2j.txt">日本語訳</a>)に従ったフリーソフトウェアとして公開します。 完全に無保証です。
+</p>
+
+<ul>
+<li><a href="pdumpfs-1.3.tar.gz">pdumpfs-1.3.tar.gz</a></li>
+<li><a href="pdumpfs-w32-1.3.zip">pdumpfs-w32-1.3.zip</a> (Windows 用バイナリ)</li>
+
+<li><a href="http://sourceforge.net/cvs/?group_id=111004">CVS</a></li>
+</ul>
+
+<h2>関連リンク集</h2>
+
+<ul>
+<li><cite><a href="http://namazu.org/~satoru/unimag/8/">横着プログラミング 第8回: pdumpfs: 毎日のスナップショットを保存する</a></cite><br />
+Unix Magazine 2002年9月号に書いた記事です</li>
+
+<li><cite><a href="http://namazu.org/~satoru/pub/sd-2003-08/">pdumpfsによる定期バックアップのススメ</a></cite><br />
+Software Design 2003年8月号に書いた記事です</li>
+
+<li><a href="http://www.misuzilla.org/dist/net/mdumpfs/">mdumpfs</a><br />
+.NET Framework を使って書かれた pdumpfs と同様のツール。Windows 用</li>
+
+<li><a href="http://www.igmus.org/code/">glasstree</a><br />
+Perl で書かれた pdumpfs と同様のツール</li>
+
+<li><a href="http://freshmeat.net/projects/pdumpfs/">freshmeat.net: pdumpfs</a></li>
+</ul>
+
+<hr />
+<address><a href="http://namazu.org/~satoru/">Satoru Takabayashi</a></address>
+</body>
+</html>

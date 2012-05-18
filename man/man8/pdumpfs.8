@@ -1,0 +1,132 @@
+.\"                                      Hey, EMACS: -*- nroff -*-
+.Dd November 25, 2001
+.\" Please adjust this date whenever revising the manpage.
+.Dt PDUMPFS 8
+.Sh NAME
+.Nm pdumpfs
+.Nd A daily backup system similar to Plan9's dumpfs
+.Sh SYNOPSIS
+.Nm
+.Ar src-dir dest-dir
+.Op dest-basename
+.Sh DESCRIPTION
+.Nm
+is a simple daily backup system written in
+.Nm Ruby ( Xr ruby 1 ) ,
+which is similar to Plan9's
+.Nm dumpfs
+that preserves every daily snapshot.
+.Pp
+Back up your home directory with
+.Nm ,
+and you can retrieve any past day's snapshot of any file.
+.Pp
+.Nm
+constructs each day's snapshot in the directory named
+.Pa YYYY/MM/DD
+under the destination directory.  All source files are copied to the
+snapshot directory for the first time, and on and after the second
+time,
+.Nm
+copies only updated or newly created files and stores unchanged files
+as hard links to the files of the previous day's snapshot to save disk
+space.
+.Pp
+The latest version of
+.Nm
+is always available at
+.Pa http://namazu.org/~satoru/pdumpfs/ .
+.Sh EXAMPLE
+To backup your home directory
+.Pa /home/yourname
+to
+.Pa /backup ,
+run the following command.
+.Pp
+.Dl pdumpfs /home/yourname /backup >/backup/log 2>/backup/error-log
+.Pp
+On and after the second day, it is a good idea to invoke the backup
+command with
+.Xr cron 8
+daemon.  Adding the following line to your crontab file allows you to
+back up your home directory at 5 a.m. everyday.
+.Pp
+.Dl 00 05 * * * pdumpfs /home/yourname /backup >/backup/log 2>/backup/error-log
+.Pp
+If the backup system works well, you can retrieve any given day's file
+with a file name like
+.Pa /backup/2001/02/19/yourname/ . . .
+.Sh LIMITATION
+.Bl -dash -compact
+.It
+.Nm
+can only handle normal files, directories, and symbolic links.
+.Pp
+.It
+.Nm
+may not work on systems other than
+.Ux
+because
+.Nm
+utilizes hard links.
+.Pp
+.It
+.Nm
+is not suited for a directory containing large files which are updated
+frequently.
+.Pp
+.It
+If more than 31 day absence occurs, incremental backup would not be
+performed.  So, back up your files on a daily basis.
+.Pp
+.It
+With
+.Nm ,
+you can safely remove unnecessary files because the past files can be
+retrieved at any time.  However, you must not rely too much on
+.Nm .
+It may have serious bugs.
+.El
+.Sh TIPS
+.Bl -dash
+.It
+If the total disk usage increases by 10 MB everyday, about 4 GB disk
+space will be consumed every year.  It would not matter so much
+considering the recent evolution of computer resources.
+.Pp
+.It
+Back up your files to a physically separated device. 
+.Pp
+.It
+On some systems, files can be made immutable.
+.Pp
+To make all files in
+.Pa /backup
+immutable on Linux, run the following command as root:
+.Pp
+.Dl chattr -R +i /backup
+.Pp
+On
+.Bx 4.4
+derived systems, run the following command as root:
+.Pp
+.Dl chflags -R schg /backup
+.Pp
+These commands will keep you from accidentally
+removing your backup files with
+.Cm "rm -rf" .
+.El
+.Sh AUTHOR
+.Nm
+and the HTML document were written by
+.An Satoru Takabayashi Aq satoru@namazu.org .
+.Pp
+This manual page was translated from the HTML document by
+.An Hiroyuki Shimada Aq shimaden@din.or.jp ,
+and reformatted by
+.An Akinori MUSHA Aq knu@iDaemons.org .
+.Sh SEE ALSO
+.Xr chattr 1 ,
+.Xr chflags 1 ,
+.Xr crontab 5 ,
+.Xr cron 8

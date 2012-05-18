@@ -1,0 +1,202 @@
+<?xml version="1.0" encoding="euc-jp"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta name="ROBOTS" content="NOARCHIVE" />
+<link rel="stylesheet" href="http://namazu.org/~satoru/satoru.css" media="all" type="text/css" />
+<title>pdumpfs: a daily backup system similar to Plan9's dumpfs</title>
+</head>
+<body>
+<p class="lang-navigator">English | <a href="pdumpfs-ja.html">Japanese</a></p>
+
+<h1>pdumpfs: a daily backup system similar to Plan9's dumpfs</h1>
+<p class="last-modified">Last Modified: 2004-12-20 (Since: 2001-02-18)</p>
+
+<hr />
+
+<h2>What's pdumpfs?</h2>
+<p>
+pdumpfs is a simple daily backup system similar to Plan9's dumpfs which preserves every daily snapshot. pdumpfs is written in <a href="http://www.ruby-lang.org/">Ruby</a>. You can access the past snapshots at any time for retrieving a certain day's file. Let's backup your home directory with pdumpfs!
+</p>
+<p>
+pdumpfs constructs the snapshot YYYY/MM/DD in the destination directory. All source files are copied to the snapshot directory for the first time. On and after the second time, pdumpfs copies only updated or newly created files and stores unchanged files as hard links to the files of the previous day's snapshot for saving a disk space.
+</p>
+
+<!-- ad -->
+
+<h2><a name="news" id="news">What's New</a></h2>
+
+<ul>
+<li><em>2004-12-15</em>: <a href="#download">pdumpfs 1.3</a> Released!<br />
+<ul>
+<li>An error message for Windows has been fixed</li>
+</ul></li>
+
+<li><em>2004-08-11</em>: <a href="#download">pdumpfs 1.2</a> Released!<br />
+<ul>
+<li>The options --quiet (-q), --dry-run (-n) has been added</li>
+<li>The 31 days limit of finding the last backup
+for incremental backup has been abolished</li>
+<li>A feature that creates `latest' symbolic link referring
+to the latest backup has been added</li>
+<li>Other small modifications has been made</li>
+</ul></li>
+
+<li><em>2004-07-13</em>: <a href="#download">pdumpfs 1.1</a> Released!<br />
+<ul>
+<li>A bug in error message handling has been fixed</li>
+<li>Other small modifications has been made</li>
+</ul></li>
+
+<li><em>2004-06-22</em>: <a href="#download">pdumpfs 1.0</a> Released!<br />
+<ul>
+<li><a href="#gui">A Windows GUI</a> is now supported using
+<a href="http://www.osk.3web.ne.jp/~nyasu/software/vrproject.html">VisualuRuby</a></li>
+</ul></li>
+
+<li><em>2004-05-11</em>: <a href="#download">pdumpfs 0.9</a> Released!<br />
+<ul>
+<li>Some bugs has been fixed including "unexpected next" bug</li>
+<li>A Windows binary is now available experimentally using
+<a href="http://exerb.sourceforge.jp/">Exerb</a></li>
+</ul></li>
+
+<li><em>2001-02-19</em>: <a href="#download">pdumpfs 0.1</a> Released!<br /></li>
+</ul>
+
+<h2><a id="gui" name="gui">Windows GUI</a></h2>
+
+<p class="center">
+<a href="images/pdumpfs.png">
+<img src="images/pdumpfs-mini.png" alt="[screenshot]" /></a>
+</p>
+
+<p>
+This is a screenshot of pdumpfs working on Windows XP.
+</p>
+
+<h2>Requirements</h2>
+
+<ul>
+<li><a href="http://www.ruby-lang.org/">Ruby</a> 1.8.1 or later</li>
+</ul>
+
+<h2>Installation</h2>
+
+<p>
+To install pdumpfs from the source code, unpack the package
+and run <code>make</code> and copy the resulting
+<code>pdumpfs</code> file to your bin directory such as
+<code>/usr/local/bin</code>.
+</p>
+
+<h2>Usage</h2>
+
+<h3>Command Line</h3>
+<pre>
+   % pdumpfs &lt;source directory&gt; &lt;destination directory&gt;
+</pre>
+
+<h3>Example</h3>
+<p>
+To backup your home directory /home/yourname to /backup, run the following command.
+</p>
+<pre>
+   % pdumpfs /home/yourname /backup &gt;/backup/log 2&gt;/backup/error-log
+</pre>
+<p>
+On and after the second day, it is a good idea to invoke the backup command with cron daemon. The following setting allows you to backup your home directory every 5 a.m.
+</p>
+<pre>
+    00 05 * * * pdumpfs /home/yourname /backup &gt;/backup/log 2&gt;/backup/error-log
+</pre>
+<p>
+If the backup system works well, you can retrieve a certain day's file with a file name like /backup/2001/02/19/yourname/...
+</p>
+
+<h3>Excluding Files</h3>
+
+<p>
+To exclude particular files from a backup, 
+you can use the following options.
+</p>
+
+<dl>
+<dt>--exclude=PATTERN</dt>
+<dd>Exclude files or directories matching PATTERN (Regular Expressions in
+Ruby) from a backup. You can specify the option as many you like.
+The pattern matching is performed for paths of source files.
+If the `source directory' given by the command line is a
+relative path, pattern matching is performed for relative
+paths including the given path itself. If the `source
+directory' is an absolute path, pattern matching is
+performed for absolute paths.
+</dd>
+<dt>--exclude-by-size=SIZE</dt>
+<dd>Exclude files larger than SIZE from a backup. You can
+specify SIZE like 100, 100K, 10M, and 1G. </dd>
+<dt>--exclude-by-glob=GLOB</dt>
+<dd>Exclude files matching GLOB from a backup. fnmatch(3)
+(shell globbing) to the basename of a file  is used  for matching.
+You can specify the option as many you like. </dd>
+</dl>
+
+<h4>Examples</h4>
+
+<pre>
+# Exclude files and directories matching "spool" or "log" from a backup.
+% pdumpfs --exclude 'spool|log' /var /mnt/backup
+
+# Exclude files larger than 10MB from a backup.
+% pdumpfs --exclude-by-size 10M ~/ /mnt/backup
+
+# Exclude wave files (*.wav) from a backup.
+% pdumpfs --exclude-by-glob "*.wav" ~/ /mnt/backup
+</pre>
+
+
+<h2>Limitation</h2>
+
+<ul>
+<li>pdumpfs can handle only normal files, directories, and symbolic links</li>
+
+<li>pdumpfs is not suited for a directory containing large files which update frequently</li>
+
+<li>With pdumpfs, you can easily remove unnecessary files because the past files can be retrieved at any time. However, please do not put too much confidence in pdumpfs. pdumpfs may have serious bugs</li>
+</ul>
+
+<h2>Tips</h2>
+
+<ul>
+<li>If files are increased by 10 MB everyday, about 4 GB disk space is consumed by one year. It is not too much, considering the recent evolution of computer resources</li>
+
+<li>Backup your files to a physically separated device</li>
+
+<li>With a linux ext2/ext3 filesystem, files can be immutable with chattr command. To make all files in /backup immutable, run <code>chattr -R +i /backup</code> with the root privilege. chattr command keep you from doing rm -rf backup files by accident</li>
+</ul>
+
+<h2><a name="download" id="download">Download</a></h2>
+<p>
+pdumpfs is a free software with ABSOLUTELY NO WARRANTY under the terms of the <a href="http://www.gnu.org/copyleft/gpl.html">GNU General Public License version 2</a>.
+</p>
+
+<ul>
+<li><a href="pdumpfs-1.3.tar.gz">pdumpfs-1.3.tar.gz</a></li>
+<li><a href="pdumpfs-w32-1.3.zip">pdumpfs-w32-1.3.zip</a> (Windows binary)</li>
+<li><a href="http://sourceforge.net/cvs/?group_id=111004">CVS</a></li>
+</ul>
+
+<h2>Links</h2>
+
+<ul>
+<li><a href="http://www.igmus.org/code/">glasstree</a><br />
+A similar tool written in Perl</li>
+
+<li><a href="http://freshmeat.net/projects/pdumpfs/">freshmeat.net: pdumpfs</a></li>
+</ul>
+
+<hr />
+<address><a href="http://namazu.org/~satoru/">Satoru Takabayashi</a></address>
+</body>
+</html>

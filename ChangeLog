@@ -1,0 +1,418 @@
+2004-12-20  Satoru Takabayashi  <satoru@namazu.org>
+
+	* doc/pdumpfs-ja.html: Update documentation 
+	* doc/pdumpfs.html: Ditto.
+
+2004-12-15  Satoru Takabayashi  <satoru@namazu.org>
+
+ 	* pdumpfs: Version 1.3 released.
+
+2004-12-14  Satoru Takabayashi  <satoru@namazu.org>
+
+	* doc/pdumpfs-ja.html: Update modification.
+	* doc/pdumpfs.html: Ditto.
+
+	* pdumpfs.in (Pdumpfs::Pdumpfs::validate_directories): Fix an
+	error message for windows. The bug was reported by MORIOKA
+	Yasuhiro <yasuhiro.morioka at k5.dion.ne.jp>
+
+	* Makefile (VERSION): Bumped version number to 1.3.
+
+2004-10-28  Satoru Takabayashi  <satoru@namazu.org>
+
+	* doc/pdumpfs-ja.html: Update documentation.
+	* doc/pdumpfs.html: Ditto.
+
+2004-10-01  Satoru Takabayashi  <satoru@namazu.org>
+
+	* catalog-validator.rb (CatalogValidator): Renamed from
+	MessageValidator. 
+
+2004-08-15  Satoru Takabayashi  <satoru@namazu.org>
+
+	* pdumpfs.in (parse_options): Don't strip the trailing '/' in the
+	method. 
+	(Pdumpfs::Pdumpfs::start): Do it in the method instead.
+
+2004-08-11  Satoru Takabayashi  <satoru@namazu.org>
+
+ 	* pdumpfs: Version 1.2 released.
+
+	* pdumpfs.in (Pdumpfs::Pdumpfs::latest_snapshot): Use Date.valid_date?.
+	(Pdumpfs::Pdumpfs::valid_date?): Removed.
+	(File::safe_readlink): Removed.
+	(Pdumpfs::FileMatcher::exclude?): Simplified. Don't rescue
+	Errno:ENOENT in this method. 
+	(Pdumpfs::Pdumpfs::update_snapshot): Rescue Errno::EACCES as well
+	as Errno::ENOENT.
+	(Pdumpfs::Pdumpfs::recursive_copy): Ditto.
+
+2004-08-10  Satoru Takabayashi  <satoru@namazu.org>
+
+	* pdumpfs.in (Pdumpfs::Pdumpfs::report): New method.
+	(Pdumpfs::Pdumpfs::update_file): Use it.
+	(Pdumpfs::Pdumpfs::recursive_copy): Ditto.
+	(Pdumpfs::Pdumpfs::recursive_copy): Simplified using detect_type.
+	(File::safe_readlink): New function.
+	(File::anything_exist?): New function.
+	(Pdumpfs::Pdumpfs::valid_date?): New method.
+	(Pdumpfs::Pdumpfs::past?): New method.
+	(Pdumpfs::Pdumpfs::datedir): Use File::SEPARATOR.
+	(File::expand_special_folders): Ditto.
+	(File::PdumpfsForm::get_exe_file_name): Ditto.
+	(File::PdumpfsForm::get_program_file_name): Ditto.
+	(Pdumpfs::Pdumpfs::start): Don't use Date.today any longer.
+	(Pdumpfs::Pdumpfs::latest_snapshot): Take a new parameter: start_time.
+	(Pdumpfs::Pdumpfs::make_relative_path): New method.
+	(Pdumpfs::Pdumpfs::update_snapshot): Use it.
+	(Pdumpfs::Pdumpfs::recursive_copy): Ditto.
+	(Pdumpfs::Pdumpfs::sub_directory?): New method.
+	(Pdumpfs::Pdumpfs::start): Use it.
+	(File::init): New method. Initialize $KCODE in the method.
+	(Pdumpfs::Pdumpfs::same_directory?): New method.
+	(Pdumpfs::Pdumpfs::start): Use it.
+	(Pdumpfs::Pdumpfs::create_latest_symlink): New method. Suggested
+	by Kentaro Fukuchi <fukuchi at megaui.net>
+	
+	* pdumpfs.in (parse_options): New option: --dry-run (-n).
+	(Pdumpfs::Pdumpfs::initialize): New field: @dry_run.
+	(Pdumpfs::Pdumpfs::update_file): Simplified.
+	(Pdumpfs::Pdumpfs::chown_if_root): New method.
+	(Pdumpfs::Pdumpfs::detect_type): Ditto.
+	(wprintf): Renamed from eprintf.
+	(Pdumpfs::FileMatcher::exclude?): Use wprintf.
+	(main): Ditto.
+	(Pdumpfs::Pdumpfs::update_snapshot): Modify the exception
+	handling. Don't rescue exceptions other than Errno::ENOENT.
+	(Pdumpfs::Pdumpfs::recursive_copy): Ditto.
+
+	* Makefile (VERSION): Bumped version number to 1.2.
+
+	* tests/pdumpfs-test: be quiet.
+
+	* pdumpfs.in (parse_options): Fix a bug arised by the yesterday's
+	modification. 
+	(parse_options): New option: --quiet (-q).
+	(Pdumpfs::Pdumpfs::initialize): Remove field @verbose.
+
+2004-08-09  Satoru Takabayashi  <satoru@namazu.org>
+
+	* pdumpfs.in (parse_options): Don't strip the trailing / if
+	ARGV[0] == "/". Suggested by Toshikazu Ichikawa <ichikawa at
+	toshikazu.org>
+
+2004-08-04  Satoru Takabayashi  <satoru@namazu.org>
+
+	* pdumpfs.in (parse_options): Make the option parser quiet.
+
+2004-08-02  Satoru Takabayashi  <satoru@namazu.org>
+
+	* ChangeLog: Obfuscate email addresses to prevent spams.
+
+2004-07-13  Satoru Takabayashi  <satoru@namazu.org>
+
+ 	* pdumpfs: Version 1.1 released.
+
+	* Makefile (VERSION): Bumped version number to 1.1.
+
+2004-07-09  Satoru Takabayashi  <satoru@namazu.org>
+
+	* pdumpfs.in (File::PdumpfsForm::get_program_directory): New method.
+	(File::PdumpfsForm::get_program_file_name): Renamed from program_name.
+
+2004-06-30  Satoru Takabayashi  <satoru@namazu.org>
+
+	* pdumpfs.in (main): Add \n to printf for displaying errors. Fix
+	the bug reported by SASADA Koichi<ko1 at atdot.net>. [pdumpfs-new:12]
+	(parse_options): Add a check for the availability of File.fnmatch.
+
+2004-06-22  Satoru Takabayashi  <satoru@namazu.org>
+
+	* doc/pdumpfs-ja.html: Moved from ..
+	* doc/pdumpfs.html: Ditto.
+	* doc/images/pdumpfs.png: New file.
+	* doc/images/pdumpfs-mini.png: New file.
+	* doc/images/pdumpfs-ja.png: New file.
+	* doc/images/pdumpfs-ja-mini.png: New file.
+
+ 	* pdumpfs: Version 1.0 released.
+
+	* Makefile (dist): Don't include  pdumpfs.exe.manifest.
+
+	* Makefile (VERSION): Bumped version number to 1.0.
+
+2004-05-22  Satoru Takabayashi  <satoru@namazu.org>
+
+	* pdumpfs.in (Pdumpfs::Pdumpfs::convert_bytes): New method.
+
+2004-05-21  Satoru Takabayashi  <satoru@namazu.org>
+
+	* pdumpfs.in (Pdumpfs::PdumpfsForm::task_scheduler_menu_clicked):
+	New method.
+	(Pdumpfs::TimerDialog): Removed.
+	(Pdumpfs::TaskSchedulerDialog::construct): New class.
+	(Pdumpfs::PdumpfsForm::set_timer_menu_clicked): Removed.
+	(Pdumpfs::PdumpfsForm::unset_timer_menu_clicked): Ditto.
+	(Pdumpfs::PdumpfsForm::calc_interval): Ditto.
+	(Pdumpfs::PdumpfsForm::update_statusbar): Ditto.
+	(Pdumpfs::PdumpfsForm::start_timer_thread): Ditto.
+	(Pdumpfs::PdumpfsForm::terminate_timer_thread): Ditto.
+	(Pdumpfs::PdumpfsForm::restart_timer_thread): Ditto.
+	(Pdumpfs::PdumpfsForm::save_config): Remove backup_time.
+	(Pdumpfs::PdumpfsForm::load_config): Ditto.
+	(Pdumpfs::TaskSchedulerDialog::construct): Simplified.
+	(Pdumpfs::PdumpfsForm::start_statusbar_thread): Removed.
+	(ntfs?): New method.
+	(Pdumpfs::Pdumpfs): New class.
+	(File::PdumpfsForm::save_menu_clicked): Removed.
+	(File::PdumpfsForm::save_script): Ditto.
+	(File::PdumpfsForm::escape): Ditto.
+
+2004-05-20  Satoru Takabayashi  <satoru@namazu.org>
+
+	* pdumpfs.in (PdumpfsForm::do_backup): Use default values for
+	parameters.
+	(Pdumpfs::PdumpfsForm::save_script): New method.
+	(Pdumpfs::PdumpfsForm::save_menu_clicked): Ditto.
+
+2004-05-19  Satoru Takabayashi  <satoru@namazu.org>
+
+	* pdumpfs.in: (File::readable_file?): New method.
+	(Pdumpfs::hour): New method.
+	(Pdumpfs::min): Ditto.
+	(Pdumpfs::sec): Ditto.
+	(Pdumpfs::GetText): Simplified.
+	(Pdumpfs::Catalog): Removed.
+	(Pdumpfs::TimerDialog): New class.
+	(Pdumpfs::VRMenuItem::disable): New method.
+	(Pdumpfs::VRMenuItem::enable): Ditto.
+	(Pdumpfs::PdumpfsForm::init_catalog): New method.
+	(Pdumpfs::PdumpfsForm::get_into_tasktray): Ditto.
+	(Pdumpfs::PdumpfsForm::add_controls): Ditto.
+	(Pdumpfs::PdumpfsForm::add_menus): Ditto.
+	(Pdumpfs::PdumpfsForm::set_timer_menu_clicked): Ditto.
+	(Pdumpfs::PdumpfsForm::unset_timer_menu_clicked): Ditto.
+	(Pdumpfs::PdumpfsForm::calc_interval): Ditto.
+	(Pdumpfs::PdumpfsForm::update_statusbar): Ditto.
+	(Pdumpfs::PdumpfsForm::self_trayrbuttonup): Ditto.
+	(Pdumpfs::PdumpfsForm::restore_menu_clicked): Ditto.
+	(Pdumpfs::PdumpfsForm::start_statusbar_thread): Ditto.
+	(Pdumpfs::PdumpfsForm::start_timer_thread): Ditto.
+	(Pdumpfs::PdumpfsForm::terminate_timer_thread): Ditto.
+	(Pdumpfs::PdumpfsForm::restart_timer_thread): Ditto.
+	(Pdumpfs::PdumpfsForm::open_file): Ditto.
+	(Pdumpfs::PdumpfsForm::save_config): Ditto.
+	(Pdumpfs::PdumpfsForm::load_config): Ditto.
+	(Pdumpfs::PdumpfsForm::quit_graceful): Ditto.
+	(Pdumpfs::PdumpfsForm::self_close): Ditto.
+	(Pdumpfs::PdumpfsForm::tasktray_menu_clicked): Ditto.
+	(Pdumpfs::PdumpfsForm::view_log_menu_clicked): Ditto.
+	(Pdumpfs::PdumpfsForm::clear_log_menu_clicked): Ditto.
+	(Pdumpfs::PdumpfsForm::update_menuitem): Ditto.
+	(Pdumpfs::PdumpfsForm::histories_not_empty?): Ditto.
+	(Pdumpfs::PdumpfsForm::log_file_exist?): Ditto.
+	(Pdumpfs::PdumpfsForm::update_menu): Ditto.
+	(Pdumpfs::PdumpfsForm::clear_history): Ditto.
+	(Pdumpfs::PdumpfsForm::clear_history_menu_clicked): Ditto.
+	(Pdumpfs::PdumpfsForm::combobox_find): Ditto.
+	(Pdumpfs::PdumpfsForm::combobox_empty?): Ditto.
+	(Pdumpfs::PdumpfsForm::web_menu_clicked): Ditto.
+	(Pdumpfs::PdumpfsForm::validate_filesystem): Ditto.
+	(Pdumpfs::PdumpfsForm::sensitive_menus): Ditto.
+	(Pdumpfs::PdumpfsForm::disable_controls): Ditto.
+	(Pdumpfs::PdumpfsForm::enable_controls): Ditto.
+	(Pdumpfs::PdumpfsForm::do_critical): Ditto.
+	(Pdumpfs::PdumpfsForm::validate_all): Ditto.
+	(Pdumpfs::PdumpfsForm::add_log_entry): Ditto.
+	(Pdumpfs::PdumpfsForm::do_backup): Refined.
+
+2004-05-18  Satoru Takabayashi  <satoru@namazu.org>
+
+	* pdumpfs.in (GetText): New module.
+	(Pdumpfs::Catalog): New class.
+	(Pdumpfs::PdumpfsForm): Use them.
+	(Pdumpfs::PdumpfsForm::load_catalog): New method.
+	(Pdumpfs::PdumpfsForm::get_local_time): New method.
+
+	* catalog-validator.rb: New file.
+	* catalog.jpn: New file.
+
+2004-05-12  Satoru Takabayashi  <satoru@namazu.org>
+
+	* pdumpfs.in (validate): New function.
+	(main): Use it.
+	(NullMatcher): New class.
+	(parse_options): Use it.
+	(start_backup): New function.
+	(PdumpfsForm): New module.
+	(recursive_copy): Add a new parameter: reporter.
+	(update_snapshot): Ditto.
+	(nodir): Removed.
+	(PdumpfsForm): New class for Windows GUI.
+	(File::force_symlink): New method.	
+	(update_file): Use it.
+
+	* pdumpfs.exe.manifest: New file.
+
+	* Makefile (VERSION): Bumped version number to 0.99
+
+2004-05-11  Satoru Takabayashi  <satoru@namazu.org>
+
+ 	* pdumpfs: Version 0.9 released.
+
+	* pdumpfs.html: Renamed from pdumpfs-en.html.
+
+	* Makefile (pdumpfs.exe): New rule.
+	(dist-w32): Ditto.
+	(dist): Add README and COPYING.
+
+	* tests/pdumpfs-test (yesterday): Add a test for comparing inodes.
+
+	* pdumpfs.in (File::force_symlink): New method.
+
+2004-05-10  Satoru Takabayashi  <satoru@namazu.org>
+
+	* Makefile: New file.
+
+	* pdumpfs: Apply a patch by Takeshi Komiya
+	<katsuwo at monochrome.jp>. W32 support now requires Ruby 1.8 not 1.7.
+
+2004-03-31  Satoru Takabayashi  <satoru@namazu.org>
+
+	* pdumpfs: (File::real_file?): New function.
+	(same_file?): Use it.
+	(File::real_directory?): New function.
+	(update_file): Fixed the symlink handling of the case when the
+	latest backup file is a real file but the current source file is
+	changed to symlink. Reported by "KAMOSAWA, Masao"
+	<jcd00743 at nifty.ne.jp>. 
+
+	* pdumpfs: Bumped version number to 0.9.
+
+ 	* pdumpfs: Version 0.8 released.
+
+	* pdumpfs (is_windows?): Use Regexp#match instead of String#match
+	to support Ruby 1.6. Reported by matsuu.
+	(windows?): Renamed from is_windows?.
+
+	* pdumpfs: Bumped version number to 0.8.
+
+2004-03-30  Satoru Takabayashi  <satoru@namazu.org>
+
+ 	* pdumpfs: Version 0.7 released.
+
+	* tests/pdumpfs-test (yesterday): Added tests for --exclude,
+	--exclude-by-size, --exclude-by-glob.
+
+	* pdumpfs (Pdumpfs::ExcludeCondition::exclude?): Modify the
+	condition on @size.
+	(usage): Updated.
+	(parse_options): Renamed: --exclude-size -> --exclude-by-size.
+	and --exclude-file by --exclude-by-glob.
+	(Pdumpfs::FileMatcher): Renamed from ExcludeCondition.
+	(Pdumpfs::FileMatcher::calc_size): Renamed from size= and simplified.
+	(Pdumpfs::FileMatcher::initialize): Take values in it.
+	(Pdumpfs::FileMatcher::size): Removed the reader.
+	(Pdumpfs::FileMatcher::globs): Removed the reader.
+	(Pdumpfs::FileMatcher::pattern): Removed the accessor.
+	(parse_options): Modified to adopt the change in FileMatcher.
+	(eprintf): New function.
+
+	* pdumpfs (parse_options): New option: --version.
+
+	* pdumpfs: Applied "pdumpfs exclude patch" by Takeshi Komiya
+	<katsuwo at monochrome.jp>.
+	<http://www.monochrome.jp/~katsuwo/software/pdumpfs-exclude/>
+
+	* pdumpfs: Applied "pdumpfs Win32/NTFS support patch" by Yasuhiro
+	Morioka <yasuhiro.morioka at k5.dion.ne.jp> and Takeshi Komiya
+	<katsuwo at monochrome.jp>.
+	<http://www.monochrome.jp/~katsuwo/software/pdumpfs-win32ntfs/>
+
+	* pdumpfs: Applied a patch to skip socket/deviceb/etc. by Takeshi
+	Komiya.	[pdumpfs:41]
+
+2002-08-06  Satoru Takabayashi  <satoru@namazu.org>
+
+ 	* pdumpfs: Version 0.6 released.
+
+	* pdumpfs (recursive_copy): Allow disappearing files while
+	recursive_copy runs by cathing Errno::ENOENT. Suggested by Roger
+	Klorese <rogerk at vmware.com>.
+	(update_snapshot): Ditto.
+
+2002-02-16  Satoru Takabayashi  <satoru@namazu.org>
+
+	* man/ja/man8/pdumpfs.8: Reformatted by
+	"Akinori MUSHA" <knu at iDaemons.org>
+
+	* man/man8/pdumpfs.8: Reformatted by
+	"Akinori MUSHA" <knu at iDaemons.org>
+
+2002-02-13  Satoru Takabayashi  <satoru@namazu.org>
+
+	* pdumpfs (main): Use File.umask(0077) to prevent others from
+	peeking o-r or g-r directories. 
+	Suggested by akira yamada <akira at arika.org>. 
+
+2002-02-12  Satoru Takabayashi  <satoru@namazu.org>
+
+ 	* pdumpfs: Version 0.5 released.
+
+	* man/ja/man8/pdumpfs.8: New file. Contributed by 
+	Hiroyuki Shimada <shimaden at din.or.jp>
+
+	* man/man8/pdumpfs.8: New file. Contributed by
+	Hiroyuki Shimada <shimaden at din.or.jp>
+
+	* pdumpfs (restore_dir_attributes): New method.
+	(update_snapshot): Use restore_dir_attributes to preserve
+	attributes of directories.
+	(recursive_copy): Ditto.
+
+2001-12-17  Satoru Takabayashi  <satoru@namazu.org>
+
+	* pdumpfs (main): Call main only if __FILE__ == $0.
+	- Suggested by akira yamada <akira at arika.org>.
+
+2001-10-19  Satoru Takabayashi  <satoru@namazu.org>
+
+ 	* pdumpfs: Version 0.4 released.
+
+	* pdumpfs: (latest_snapshot): Allow 31 days of absence.
+
+2001-08-25  Satoru Takabayashi  <satoru@namazu.org>
+
+	* pdumpfs: Apply Kazuhiro NISHIYAMA <zn at mbf.nifty.com>'s patch.
+	- Destination basename can be specified as a command line option.
+	- Use Regexp.quote for a souce directory in a regex.
+	- Use File.chown if invoked by root.
+	- Use File.lchown if available.
+	- Avoid utime for symlinks.
+
+2001-02-21  Satoru Takabayashi  <satoru-t@is.aist-nara.ac.jp>
+
+	* pdumpfs: Version 0.3 released.
+
+	* pdumpfs (update_file): Fix directory handling bug.
+
+2001-02-20  Satoru Takabayashi  <satoru-t@is.aist-nara.ac.jp>
+
+	* pdumpfs: Version 0.2 released.
+
+	* pdumpfs: Fix trivial bugs.
+
+2001-02-19  Satoru Takabayashi  <satoru-t@is.aist-nara.ac.jp>
+
+	* pdumpfs: Version 0.1 released.
+
+	* pdumpfs (genpath): Abolished.
+
+2001-02-18  Satoru Takabayashi  <satoru-t@is.aist-nara.ac.jp>
+
+	* pdumpfs: Rewrite it in Ruby
+
+2001-02-15  Satoru Takabayashi  <satoru-t@is.aist-nara.ac.jp>
+
+	* pdumpfs: Prototyping with shell script
+
