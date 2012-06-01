@@ -773,7 +773,7 @@ if has_vruby?
 end
 
 module Pdumpfs
-  VERSION = @VERSION@
+#  VERSION = @VERSION@
 
   class NullMatcher
     def initialize (options = {})
