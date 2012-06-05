@@ -1221,5 +1221,5 @@ def main
     end
   end
 end
-
+STDOUT.sync = true
 main if __FILE__ == $0
