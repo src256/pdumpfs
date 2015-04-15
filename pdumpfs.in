@@ -865,7 +865,14 @@ module Pdumpfs
   class Pdumpfs
     def initialize (config = {})
       @matcher  = (config[:matcher]  or NullMatcher.new)
-      @reporter = (config[:reporter] or lambda {|x| puts x })
+      @reporter = config[:reporter]
+      unless @reporter
+        if config[:verbose]
+          @reporter = lambda {|x| puts x }
+        else
+          @reporter = lambda {|x| puts x if x =~ /^new_file/}
+        end
+      end
       @log_file = (config[:log_file] or nil)
       @dry_run  = (config[:dry_run] or false)
       @interval_proc = (config[:interval_proc] or lambda {})
@@ -1208,7 +1215,8 @@ def parse_options
                      ['--dry-run', '-n',   GetoptLong::NO_ARGUMENT],
                      ['--help', '-h',      GetoptLong::NO_ARGUMENT],
                      ['--version', '-v',   GetoptLong::NO_ARGUMENT],
-                     ['--backtrace',       GetoptLong::NO_ARGUMENT]
+                     ['--backtrace',       GetoptLong::NO_ARGUMENT],
+                     ['--verbose',         GetoptLong::NO_ARGUMENT],
                      )
   parser.quiet = true
   parser.each_option do |name, arg|
@@ -1232,6 +1240,8 @@ def parse_options
       config[:dry_run] = true
     when '--backtrace'
       config[:backtrace] = true
+    when '--verbose'
+      config[:verbose] = true
     when '--version'
       version
     end
