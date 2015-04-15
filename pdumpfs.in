@@ -904,7 +904,8 @@ module Pdumpfs
       # strip the trailing / to avoid basename(src) == '' for Ruby 1.6.x.
       src  = src.sub(%r!/+$!, "") unless src == '/' #'
       base = File.basename(src) unless base
-
+      dirname = File.dirname(src)
+      raise RuntimeError unless FileTest.exist?(dirname + '/' + base)
       latest = latest_snapshot(start_time, src, dest, base)
       today  = File.join(dest, datedir(start_time), base)
 
