@@ -867,18 +867,51 @@ module Pdumpfs
       @matcher  = (config[:matcher]  or NullMatcher.new)
       @reporter = config[:reporter]
       unless @reporter
-        if config[:verbose]
-          @reporter = lambda {|x| puts x }
+        if config[:report]
+          @reporter = lambda {|type, file_name|
+            if type =~ /^new_file/
+              stat = File.stat(file_name)
+              size = stat.size
+              format_size = convert_bytes(size)
+              msg = format_report_with_size(type, file_name, size, format_size)
+              puts msg
+              File.open(@report_file, "a") do |f|
+                msg = format_report_with_size_as_csv(type, file_name, size, format_size)
+                f.puts msg
+              end
+            end
+          }
+        elsif config[:verbose]
+          @reporter = lambda {|type, file_name| puts format_report(type, file_name) }
         else
-          @reporter = lambda {|x| puts x if x =~ /^new_file/}
+          @reporter = lambda {|type, file_name| puts format_report(type, file_name) if type == 'new_file'}
         end
       end
       @log_file = (config[:log_file] or nil)
       @dry_run  = (config[:dry_run] or false)
       @interval_proc = (config[:interval_proc] or lambda {})
       @written_bytes = 0
+      timestamp = Time.now.strftime('%Y%m%d')
+      if config[:report]
+        report_dir = File.dirname(File.expand_path(__FILE__)) + '/report'
+        Dir.mkdir(report_dir) unless FileTest.directory?(report_dir)
+        @report_file = report_dir + "/report_#{timestamp}.csv"
+        puts @report_file
+      end
     end
-
+    
+    def format_report(type, file_name)
+      sprintf("%-12s %s\n", type, file_name)
+    end
+    
+    def format_report_with_size(type, file_name, size, format_size)
+      sprintf("%s\t%s\t%d\t%s\n", type, file_name, size, format_size)
+    end
+    
+    def format_report_with_size_as_csv(type, file_name, size, format_size)
+      sprintf("%s,%s,%d,%s\n", type, file_name.encode('cp932'), size, format_size)
+    end    
+          
     def create_latest_symlink (dest, today)
       latest_day = File.dirname(make_relative_path(today, dest))
       latest_symlink = File.join(dest, "latest")
@@ -1058,8 +1091,7 @@ module Pdumpfs
     end
 
     def report (type, file_name)
-      message = sprintf("%-12s %s\n", type, file_name)
-      @reporter.call(message)
+      @reporter.call(type, file_name)
       @interval_proc.call
     end
 
@@ -1217,6 +1249,7 @@ def parse_options
                      ['--version', '-v',   GetoptLong::NO_ARGUMENT],
                      ['--backtrace',       GetoptLong::NO_ARGUMENT],
                      ['--verbose',         GetoptLong::NO_ARGUMENT],
+                     ['--report', '-r',    GetoptLong::NO_ARGUMENT],
                      )
   parser.quiet = true
   parser.each_option do |name, arg|
@@ -1242,6 +1275,8 @@ def parse_options
       config[:backtrace] = true
     when '--verbose'
       config[:verbose] = true
+    when '--report'
+      config[:report] = true
     when '--version'
       version
     end
@@ -1276,5 +1311,6 @@ def main
     end
   end
 end
+
 STDOUT.sync = true
 main if __FILE__ == $0

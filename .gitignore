@@ -2,6 +2,6 @@
 *.diff
 *.log
 *.orig
-
+report/
 
 
