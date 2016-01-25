@@ -909,7 +909,7 @@ module Pdumpfs
     end
     
     def format_report_with_size_as_csv(type, file_name, size, format_size)
-      sprintf("%s,%s,%d,%s\n", type, file_name.encode('cp932'), size, format_size)
+      sprintf("%s,%s,%d,%s\n", type, file_name.encode('cp932', undef: :replace), size, format_size)
     end    
           
     def create_latest_symlink (dest, today)
